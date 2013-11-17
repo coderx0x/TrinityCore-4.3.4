@@ -541,6 +541,22 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
             }
             break;
         case SPELL_AURA_SCHOOL_ABSORB:
+        {
+            switch (GetSpellInfo()->SpellFamilyName)
+            {
+                case SPELLFAMILY_MAGE:
+                {
+                    if (GetSpellInfo()->SpellFamilyFlags[1] == 0x00000001 && GetSpellInfo()->SpellFamilyFlags[2] == 0x00000008) // 11426 - Ice Barrier
+                    {
+                        //  add 87.0% of the SPD 
+                        float bonus_spd = caster->SpellBaseDamageBonusDone(m_spellInfo->GetSchoolMask()) * 0.87;
+                        amount += bonus_spd;
+                    }
+                }
+            }
+            m_canBeRecalculated = false;
+            break;
+        }
         case SPELL_AURA_MANA_SHIELD:
             m_canBeRecalculated = true;
             break;
