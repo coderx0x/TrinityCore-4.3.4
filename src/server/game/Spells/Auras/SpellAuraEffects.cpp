@@ -558,8 +558,22 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
             break;
         }
         case SPELL_AURA_MANA_SHIELD:
-            m_canBeRecalculated = true;
+        {
+            switch (GetSpellInfo()->SpellFamilyName)
+            {
+                case SPELLFAMILY_MAGE:
+                {
+                    if (GetSpellInfo()->SpellFamilyFlags[0] == 0x00008000 && GetSpellInfo()->SpellFamilyFlags[2] == 0x00000008) // 1463 - Mana Sheald
+                    {
+                        //  add 80.7% of the SPD 
+                        float bonus_spd = caster->SpellBaseDamageBonusDone(m_spellInfo->GetSchoolMask()) * 0.807;
+                        amount += bonus_spd;
+                    }
+                }
+            }
+            m_canBeRecalculated = false;
             break;
+        }
         case SPELL_AURA_MOUNTED:
             if (MountCapabilityEntry const* mountCapability = GetBase()->GetUnitOwner()->GetMountCapability(uint32(GetMiscValueB())))
             {
