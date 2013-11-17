@@ -551,6 +551,11 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
                         //  add 87.0% of the SPD 
                         float bonus_spd = caster->SpellBaseDamageBonusDone(m_spellInfo->GetSchoolMask()) * 0.87;
                         amount += bonus_spd;
+
+                        if (Aura *aura = caster->GetAura(63095)) // Glyph of Ice Barrier
+                        {
+                            amount += CalculatePct(amount, aura->GetEffect(EFFECT_0)->GetAmount());
+                        }
                     }
                 }
             }
